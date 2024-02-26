@@ -26,9 +26,11 @@ for (let i=0; i<nums.length; i++){
     if (!opPressed){
       if (displayText == "0"){
         displayText = nums[i].textContent;
+        console.log("run3");
       }
       else{
         displayText += nums[i].textContent;
+        console.log("run4");
       }
     }
     else{
@@ -36,18 +38,21 @@ for (let i=0; i<nums.length; i++){
         displayText = nums[i].textContent;
         changeColor(currentOperation, true);
         onSecondNum = true;
+        console.log("run5");
       }
       else{
         if (displayText == "0"){
           displayText = nums[i].textContent;
+          console.log("run6");
         }
         else{
           displayText += nums[i].textContent;
+          console.log("run7");
         }
       }
     }
     
-    display.textContent = displayText;
+    updateDisplay();
   })
 }
 
@@ -76,31 +81,45 @@ for (let i=0; i<ops.length; i++){
     changeColor(ops[i]);
 
     //recording number before operator was pressed
-    previousValue = Number(displayText);
+    if (displayText != null){
+      previousValue = Number(displayText);  
+      console.log("run1");
+    }
+    else{
+      previousValue = null;
+      console.log("run2");
+    }
   });
 }
 
 equals.addEventListener("click", function(){
-  switch (currentOperation){
-    case ops[0]:
-      if (displayText != "0")
-        displayText = previousValue / Number(displayText);
-      else
-        displayText = "Error";
-      break;
-    case ops[1]:
-      displayText = previousValue * Number(displayText);
-      break;
-    case ops[2]:
-      displayText = previousValue - Number(displayText);
-      break;
-    case ops[3]:
-      displayText = previousValue + Number(displayText);
-      break;
+  if (previousValue != null && displayText != null){
+    switch (currentOperation){
+      case ops[0]:
+        if (displayText != "0")
+          displayText = previousValue / Number(displayText);
+        else
+          displayText = null;
+        console.log("run");
+        break;
+      case ops[1]:
+        displayText = previousValue * Number(displayText);
+        console.log("run mult");
+        break;
+      case ops[2]:
+        displayText = previousValue - Number(displayText);
+        break;
+      case ops[3]:
+        displayText = previousValue + Number(displayText);
+        break;
+    }
   }
+  else{
+    displayText = null;
+  }
+  updateDisplay();
   onSecondNum = false;
   opPressed = false;
-  updateDisplay();
 });
 
 percent.addEventListener("click", function(){
@@ -134,9 +153,14 @@ function changeColor(button, alreadyPressed=false){
 function updateDisplay(){
   num = Number(displayText);
   if (num>99999999){
-    displayText = "Too Big";
+    display.textContent = "Too Big";
   }
-  num = Number(num.toFixed(7));
-  displayText = num.toString();
-  display.textContent = displayText;
+  else if (displayText == null){
+    display.textContent = "Error";
+  }
+  else{
+    num = Number(num.toFixed(7));
+    displayText = num.toString();
+    display.textContent = displayText;
+  }
 }
